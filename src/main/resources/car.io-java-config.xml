@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration>
+	<CAR_IO_SERVER>http://giv-car.uni-muenster.de:8080/dev/rest/</CAR_IO_SERVER>
+	<VALIDATE_JSON>false</VALIDATE_JSON>
+</configuration>

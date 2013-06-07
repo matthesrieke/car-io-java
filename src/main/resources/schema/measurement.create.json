@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "http://schema.envirocar.org/measurement.create.json#",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "type",
+        "geometry",
+        "properties"
+    ],
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": [
+                "Feature"
+            ]
+        },
+        "geometry": {
+            "$ref": "http://schema.envirocar.org/geometry.json#"
+        },
+        "properties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "time",
+                "phenomenons"
+            ],
+            "properties": {
+                "sensor": {
+                    "$ref": "#/definitions/value-ref"
+                },
+                "time": {
+                    "$ref": "http://schema.envirocar.org/definitions.json#/date-time"
+                },
+                "phenomenons": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "value"
+                        ],
+                        "properties": {
+                            "value": {
+                                "type": [
+                                    "string",
+                                    "number",
+                                    "boolean"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "value-ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

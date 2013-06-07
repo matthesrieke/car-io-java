@@ -1,0 +1,10 @@
+{
+	"tracks":[
+	 {
+		 "id":"51af5861e4b014f3e6f06097",
+		 "modified":"2013-06-05T15:25:53Z",
+		 "name":"Track #1 of testuser1",
+		 "href":"http://giv-car.uni-muenster.de:8080/dev/rest/tracks/51af5861e4b014f3e6f06097"
+	 }
+	 ]
+}

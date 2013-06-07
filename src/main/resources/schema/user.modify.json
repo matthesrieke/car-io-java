@@ -1,0 +1,14 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "http://schema.envirocar.org/user.modify.json#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "mail": {
+            "$ref": "http://schema.envirocar.org/definitions.json#/mail"
+        },
+        "token": {
+            "type": "string"
+        }
+    }
+}
