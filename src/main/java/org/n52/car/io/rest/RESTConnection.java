@@ -94,26 +94,25 @@ public class RESTConnection implements Connection {
 
 	@Override
 	public Reader getUsersAsStream() throws ConnectionException {
-		return prepareStream(USERS_URI);
+		return prepareResourceAsStream(host.concat(USERS_URI));
 	}
 
 	@Override
 	public Reader getTracksAsStream() throws ConnectionException {
-		return prepareStream(TRACKS_URI);
+		return prepareResourceAsStream(host.concat(TRACKS_URI));
 	}
 
-	private Reader prepareStream(String target) throws ConnectionException {
-		String uri = host.concat(target);
+	private Reader prepareResourceAsStream(String target) throws ConnectionException {
 		HttpResponse result;
 		try {
-			result = client.executeGet(uri);
+			result = client.executeGet(target);
 			if (result != null && result.getStatusLine().getStatusCode() <= 300) {
 				return Channels.newReader(
 						Channels.newChannel(result.getEntity().getContent()),
 						resolveEncoding(result));
 			} else {
 				throw new ConnectionException(String.format(
-						"Could not connect to host at %s.", uri));
+						"Could not connect to host at %s.", target));
 			}
 		} catch (HttpClientException e) {
 			throw new ConnectionException(e);
@@ -130,6 +129,11 @@ public class RESTConnection implements Connection {
 			return result.getEntity().getContentEncoding().getValue();
 		}
 		return "UTF-8";
+	}
+
+	@Override
+	public Reader getResource(String href) throws ConnectionException {
+		return prepareResourceAsStream(href);
 	}
 
 }

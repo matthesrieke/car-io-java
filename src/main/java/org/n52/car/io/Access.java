@@ -23,6 +23,7 @@
 package org.n52.car.io;
 
 import java.util.List;
+import java.util.Map;
 
 import org.n52.car.io.types.Group;
 import org.n52.car.io.types.Measurement;
@@ -49,5 +50,7 @@ public interface Access {
 	public List<Measurement> getMeasurements() throws AccessException;
 	
 	public List<Statistic> getStatistics() throws AccessException;
+
+	public Map<?, ?> getResource(String href) throws AccessException;
 	
 }

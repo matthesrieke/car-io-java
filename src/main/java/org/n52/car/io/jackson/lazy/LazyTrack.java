@@ -20,29 +20,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.car.io.gson;
+package org.n52.car.io.jackson.lazy;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import org.n52.car.io.jackson.transform.MapToObject;
+import org.n52.car.io.jackson.transform.MapToTrack;
+import org.n52.car.io.types.Track;
 
-import org.n52.car.io.types.User;
+public class LazyTrack extends AbstractLazyLoadable<Track> {
 
-import com.google.gson.stream.JsonReader;
+	private MapToTrack transformator = new MapToTrack();
 
-public class Users extends ArrayList<User> {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public static class Adapter extends BasicTypeAdapter<Users> {
-
-		@Override
-		public Users read(JsonReader in) throws IOException {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
+	public LazyTrack(String href) {
+		super(href);
 	}
+
+	@Override
+	public MapToObject<Track> getTransformator() {
+		return this.transformator;
+	}
+
+
 }

@@ -20,7 +20,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.car.io.gson;
+package org.n52.car.io.jackson;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -38,7 +38,11 @@ import org.n52.car.io.Access;
 import org.n52.car.io.AccessException;
 import org.n52.car.io.Connection;
 import org.n52.car.io.ConnectionException;
+import org.n52.car.io.Preferences;
+import org.n52.car.io.jackson.GenericJacksonAccess;
 import org.n52.car.io.types.Track;
+
+import static org.hamcrest.CoreMatchers.*;
 
 public class TrackAccessTest {
 	
@@ -48,9 +52,16 @@ public class TrackAccessTest {
 	@Before
 	public void init() throws ConnectionException {
 		MockitoAnnotations.initMocks(this);
+		String href = "http://giv-car.uni-muenster.de:8080/dev/rest/tracks/51af5861e4b014f3e6f06097";
 		Mockito.when(connection.getTracksAsStream()).thenReturn(readTracks());
+		Mockito.when(connection.getResource(href)).thenReturn(readReferencedTrack());
 	}
 	
+	private Reader readReferencedTrack() {
+		InputStream is = getClass().getResourceAsStream("track.json");
+		return new BufferedReader(new InputStreamReader(is));
+	}
+
 	private Reader readTracks() {
 		InputStream is = getClass().getResourceAsStream("tracks.json");
 		return new BufferedReader(new InputStreamReader(is));
@@ -58,12 +69,16 @@ public class TrackAccessTest {
 
 	@Test
 	public void testAccess() throws AccessException {
-		Access ac = new GSONAccess();
+		Access ac = new GenericJacksonAccess();
 		ac.initialize(connection);
+		
+		Preferences.getInstance().setAccess(ac);
 		
 		List<Track> tracks = ac.getTracks();
 		
-		Assert.assertTrue("tracks are empty or null", tracks != null && !tracks.isEmpty());
+		Assert.assertThat(tracks, is(notNullValue()));
+		Assert.assertThat(tracks.size(), is(1));
+		Assert.assertThat(tracks.get(0).getName(), is("LazyTrack #1 of testuser1"));
 	}
 
 

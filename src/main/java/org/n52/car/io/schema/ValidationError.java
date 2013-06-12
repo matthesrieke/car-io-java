@@ -22,10 +22,22 @@
  */
 package org.n52.car.io.schema;
 
+public class ValidationError {
 
-public class JSON {
+	private String message;
+	
+	public ValidationError(String message) {
+		this.message = message;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+	
+	@Override
+	public String toString() {
+		return this.message;
+	}
 
 	
-	public JSON() {
-	}
 }

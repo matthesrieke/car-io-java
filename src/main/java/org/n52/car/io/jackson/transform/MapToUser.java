@@ -20,8 +20,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.car.io.types;
+package org.n52.car.io.jackson.transform;
 
-public interface Measurement {
+import java.util.Map;
+
+import org.joda.time.DateTime;
+import org.n52.car.io.types.User;
+
+public class MapToUser extends MapToObject<User> {
+
+	@Override
+	public User createObjectFromMap(Map<?, ?> map) {
+		User result = new User();
+		result.setName((String) map.get("name"));
+		result.setCreated(new DateTime(map.get("created")));
+		result.setModified(new DateTime(map.get("modified")));
+		result.setMail((String) map.get("mail"));
+		return result;
+	}
 
 }

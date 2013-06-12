@@ -22,6 +22,10 @@
  */
 package org.n52.car.io;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ServiceLoader;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -32,6 +36,8 @@ public class Preferences {
 	
 	private static Preferences instance;
 	private Configuration config;
+	private URL server;
+	private Access access;
 	private static final String defaultFile = "/car.io-java-config.xml";
 	private static final Logger logger = LoggerFactory.getLogger(Preferences.class);
 	
@@ -60,8 +66,37 @@ public class Preferences {
 		}
 		
 		this.config = xml;
+		
+		initCommonParameters();
 	}
 	
+	private void initCommonParameters() {
+		try {
+			this.server = new URL(getProperty(Strings.CAR_IO_SERVER.toString()));
+			this.access = instantiateAccess();
+		} catch (MalformedURLException e) {
+			logger.warn(e.getMessage(), e);
+		}
+	}
+
+	private Access instantiateAccess() {
+		ServiceLoader<Access> loader = ServiceLoader.load(Access.class);
+		for (Access access : loader) {
+			access.initialize(instantiateConnection());
+			return access;
+		}
+		return null;
+	}
+
+	private Connection instantiateConnection() {
+		ServiceLoader<Connection> loader = ServiceLoader.load(Connection.class);
+		for (Connection connection : loader) {
+			connection.initialize(getServer());
+			return connection;
+		}
+		return null;
+	}
+
 	public String getProperty(String key) {
 		return this.config.getString(key);
 	}
@@ -76,6 +111,18 @@ public class Preferences {
 	
 	public double getDouble(String key) {
 		return this.config.getDouble(key);
+	}
+
+	public URL getServer() {
+		return this.server;
+	}
+
+	public Access getAccess() {
+		return access;
+	}
+
+	public void setAccess(Access ac) {
+		this.access = ac;
 	}
 
 }

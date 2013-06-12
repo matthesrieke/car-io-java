@@ -22,14 +22,17 @@
  */
 package org.n52.car.io.gson;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 import org.n52.car.io.Access;
 import org.n52.car.io.AccessException;
 import org.n52.car.io.Connection;
 import org.n52.car.io.ConnectionException;
+import org.n52.car.io.jackson.transform.MapToObject;
+import org.n52.car.io.jackson.transform.MapToTrack;
+import org.n52.car.io.jackson.transform.MapToUser;
 import org.n52.car.io.types.Group;
 import org.n52.car.io.types.Measurement;
 import org.n52.car.io.types.Phenomenon;
@@ -37,100 +40,77 @@ import org.n52.car.io.types.Sensor;
 import org.n52.car.io.types.Statistic;
 import org.n52.car.io.types.Track;
 import org.n52.car.io.types.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
 
-public class GSONAccess implements Access {
-	
-	private static final Logger logger = LoggerFactory.getLogger(GSONAccess.class);
+public class GenericGSONAccess implements Access {
 
 	private Connection connection;
 	private Gson gson;
+	private MapToObject<Track> tracks = new MapToTrack();
+	private MapToObject<User> users = new MapToUser();
 
 	@Override
 	public void initialize(Connection conn) {
 		this.connection = conn;
-		this.gson = initGson();
-	}
-
-	private Gson initGson() {
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(Users.class, new Users.Adapter());
-		builder.registerTypeAdapter(Tracks.class, new Tracks.Adapter());
-		return builder.create();
+		this.gson = new Gson();
 	}
 
 	@Override
 	public List<User> getUsers() throws AccessException {
-		Reader reader = null;
 		try {
-			reader = this.connection.getUsersAsStream();
-			return gson.fromJson(reader, Users.class);
-		} catch (JsonParseException e) {
-			throw new AccessException(e);
+			Reader reader = this.connection.getUsersAsStream();
+			return users.fromMap(this.gson.fromJson(reader, Map.class), "users");
 		} catch (ConnectionException e) {
 			throw new AccessException(e);
-		} finally {
-			closeReader(reader);
 		}
 	}
 
 	@Override
-	public List<Group> getGroups() {
+	public List<Group> getGroups() throws AccessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<Track> getTracks() throws AccessException {
-		Reader reader = null;
 		try {
-			reader = this.connection.getTracksAsStream();
-			return gson.fromJson(reader, Tracks.class);
-		} catch (JsonParseException e) {
-			throw new AccessException(e);
+			Reader reader = this.connection.getTracksAsStream();
+			return tracks.fromMap(this.gson.fromJson(reader, Map.class), "tracks");
 		} catch (ConnectionException e) {
 			throw new AccessException(e);
-		} finally {
-			closeReader(reader);
 		}
 	}
 
-	private void closeReader(Reader reader) {
-		try {
-			if (reader != null)
-				reader.close();
-		} catch (IOException e) {
-			logger.warn(e.getMessage(), e);
-		}		
-	}
-
 	@Override
-	public List<Sensor> getSensors() {
+	public List<Sensor> getSensors() throws AccessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Phenomenon> getPhenomena() {
+	public List<Phenomenon> getPhenomena() throws AccessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Measurement> getMeasurements() {
+	public List<Measurement> getMeasurements() throws AccessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Statistic> getStatistics() {
+	public List<Statistic> getStatistics() throws AccessException {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Map<?, ?> getResource(String href) throws AccessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

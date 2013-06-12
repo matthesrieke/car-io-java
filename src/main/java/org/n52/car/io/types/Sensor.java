@@ -22,6 +22,6 @@
  */
 package org.n52.car.io.types;
 
-public class Sensor {
+public interface Sensor {
 
 }

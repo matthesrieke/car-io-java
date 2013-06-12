@@ -22,6 +22,6 @@
  */
 package org.n52.car.io.types;
 
-public class Phenomenon {
+public interface Phenomenon {
 
 }

@@ -1,0 +1,7 @@
+{
+	"users":
+	[
+	 {"name":"testuser1",
+		 "href":"http://giv-car.uni-muenster.de:8080/dev/rest/users/testuser1"}
+	 ]
+}

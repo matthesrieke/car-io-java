@@ -22,7 +22,9 @@
  */
 package org.n52.car.io;
 
-public class ConnectionException extends Exception {
+import java.io.IOException;
+
+public class ConnectionException extends IOException {
 
 	public ConnectionException(Throwable e) {
 		super(e);

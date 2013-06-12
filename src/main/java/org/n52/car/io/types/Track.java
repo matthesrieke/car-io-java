@@ -24,49 +24,15 @@ package org.n52.car.io.types;
 
 import org.joda.time.DateTime;
 
-public class Track {
+public interface Track extends HyperReferable {
 
-	private String id;
-	private String href;
-	private DateTime modified;
-	private String name;
+	public DateTime getModified();
 
-	public void setId(String object) {
-		this.id = object;
-	}
+	public String getId();
 
-	public void setModified(String string) {
-		this.modified = new DateTime(string);
-	}
+	public String getName();
 
-	public void setName(String string) {
-		this.name = string;
-	}
-
-	public void setHref(String string) {
-		this.href = string;
-	}
-
-	public DateTime getModified() {
-		return modified;
-	}
-
-	public void setModified(DateTime modified) {
-		this.modified = modified;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public String getHref() {
-		return href;
-	}
-
-	public String getName() {
-		return name;
-	}
-	
+	DateTime getCreated();
 	
 
 }

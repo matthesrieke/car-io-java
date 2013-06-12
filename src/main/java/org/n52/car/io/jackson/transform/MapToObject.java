@@ -20,8 +20,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.car.io.types;
+package org.n52.car.io.jackson.transform;
 
-public interface Measurement {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+public abstract class MapToObject<T> {
+	
+	public List<T> fromMap(Map<?, ?> map, String baseName) {
+		@SuppressWarnings("unchecked")
+		List<Object> objects = (List<Object>) map.get(baseName);
+		
+		List<T> result = new ArrayList<T>(objects.size());
+		
+		for (Object o : objects) {
+			if (o instanceof Map<?, ?>) {
+				result.add(createObjectFromMap((Map<?, ?>) o));
+			}
+		}
+		
+		return result;
+	}
+
+	public abstract T createObjectFromMap(Map<?, ?> map);
+
+	protected boolean notNullAndNotEmpty(String s) {
+		return s != null && !s.isEmpty();
+	}
 }

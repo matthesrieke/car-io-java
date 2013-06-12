@@ -20,49 +20,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.car.io.types;
+package org.n52.car.io.jackson.types;
 
 import org.joda.time.DateTime;
+import org.n52.car.io.types.Track;
 
-public class User {
+public class TrackImpl implements Track {
 
+	private String id;
+	private String href;
+	private DateTime modified;
 	private String name;
 	private DateTime created;
-	private DateTime modified;
-	private String mail;
-	
-	public String getName() {
-		return name;
+
+	public void setId(String object) {
+		this.id = object;
 	}
-	
-	public DateTime getCreated() {
-		return created;
+
+	public void setModified(String string) {
+		this.modified = new DateTime(string);
 	}
-	
+
+	public void setName(String string) {
+		this.name = string;
+	}
+
+	public void setHref(String string) {
+		this.href = string;
+	}
+
 	public DateTime getModified() {
 		return modified;
-	}
-	
-	public String getMail() {
-		return mail;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setCreated(DateTime created) {
-		this.created = created;
 	}
 
 	public void setModified(DateTime modified) {
 		this.modified = modified;
 	}
 
-	public void setMail(String mail) {
-		this.mail = mail;
+	public String getId() {
+		return id;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setCreated(DateTime dateTime) {
+		this.created = dateTime;
+	}
+
+	@Override
+	public DateTime getCreated() {
+		return created;
 	}
 	
 	
 	
+
 }

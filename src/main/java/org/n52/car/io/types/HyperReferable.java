@@ -22,6 +22,8 @@
  */
 package org.n52.car.io.types;
 
-public interface Measurement {
+public interface HyperReferable {
 
+	public String getHref();
+	
 }

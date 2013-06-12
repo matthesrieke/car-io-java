@@ -33,4 +33,6 @@ public interface Connection {
 
 	public Reader getTracksAsStream() throws ConnectionException;
 
+	public Reader getResource(String href) throws ConnectionException;
+
 }
