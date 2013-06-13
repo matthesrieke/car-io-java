@@ -24,45 +24,14 @@ package org.n52.car.io.types;
 
 import org.joda.time.DateTime;
 
-public class User {
+public interface User {
 
-	private String name;
-	private DateTime created;
-	private DateTime modified;
-	private String mail;
+	public String getName();
 	
-	public String getName() {
-		return name;
-	}
+	public DateTime getCreated();
 	
-	public DateTime getCreated() {
-		return created;
-	}
+	public DateTime getModified();
 	
-	public DateTime getModified() {
-		return modified;
-	}
-	
-	public String getMail() {
-		return mail;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setCreated(DateTime created) {
-		this.created = created;
-	}
-
-	public void setModified(DateTime modified) {
-		this.modified = modified;
-	}
-
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
-	
-	
+	public String getMail();
 	
 }

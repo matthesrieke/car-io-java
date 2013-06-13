@@ -20,10 +20,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.car.io.types;
+package org.n52.car.io.types.ref;
 
-public interface HyperReferable {
+public interface HyperReferable<T> {
 
 	public String getHref();
+	
+	public String getName();
+	
+	public T getReferredResource();
 	
 }

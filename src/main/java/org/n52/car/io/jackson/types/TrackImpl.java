@@ -28,7 +28,6 @@ import org.n52.car.io.types.Track;
 public class TrackImpl implements Track {
 
 	private String id;
-	private String href;
 	private DateTime modified;
 	private String name;
 	private DateTime created;
@@ -45,10 +44,6 @@ public class TrackImpl implements Track {
 		this.name = string;
 	}
 
-	public void setHref(String string) {
-		this.href = string;
-	}
-
 	public DateTime getModified() {
 		return modified;
 	}
@@ -59,10 +54,6 @@ public class TrackImpl implements Track {
 
 	public String getId() {
 		return id;
-	}
-
-	public String getHref() {
-		return href;
 	}
 
 	public String getName() {

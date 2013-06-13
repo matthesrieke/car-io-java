@@ -20,18 +20,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.car.io.types;
+package org.n52.car.io.jackson.types;
 
 import org.joda.time.DateTime;
+import org.n52.car.io.types.User;
 
-public interface Track {
+public class UserImpl implements User {
 
-	public DateTime getModified();
+	private String name;
+	private DateTime created;
+	private DateTime modified;
+	private String mail;
+	
+	public String getName() {
+		return name;
+	}
+	
+	public DateTime getCreated() {
+		return created;
+	}
+	
+	public DateTime getModified() {
+		return modified;
+	}
+	
+	public String getMail() {
+		return mail;
+	}
 
-	public String getId();
+	public void setName(String name) {
+		this.name = name;
+	}
 
-	public String getName();
+	public void setCreated(DateTime created) {
+		this.created = created;
+	}
 
-	DateTime getCreated();
+	public void setModified(DateTime modified) {
+		this.modified = modified;
+	}
 
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
+	
+	
+	
 }

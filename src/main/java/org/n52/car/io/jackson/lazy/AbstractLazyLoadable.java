@@ -30,21 +30,32 @@ import java.util.Map;
 import org.n52.car.io.AccessException;
 import org.n52.car.io.Preferences;
 import org.n52.car.io.jackson.transform.MapToObject;
+import org.n52.car.io.types.ref.HyperReferable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractLazyLoadable<T> implements InvocationHandler {
+public abstract class AbstractLazyLoadable<T> implements InvocationHandler, HyperReferable<T> {
 
 	protected static final Logger logger = LoggerFactory
 			.getLogger(AbstractLazyLoadable.class);
 	private T loaded;
 	private String href;
+	private String name;
 
-	public AbstractLazyLoadable(String href) {
+	public AbstractLazyLoadable(String href, String name) {
 		this.href = href;
+		this.name = name;
 	}
 	
-	public synchronized T lazyLoad() {
+	public String getHref() {
+		return href;
+	}
+
+	public String getName() {
+		return name;
+	}
+	
+	public synchronized T getReferredResource() {
 		if (this.loaded != null)
 			return this.loaded;
 
@@ -58,13 +69,11 @@ public abstract class AbstractLazyLoadable<T> implements InvocationHandler {
 		return getTransformator().createObjectFromMap(map);
 	}
 
-	public abstract MapToObject<T> getTransformator();
-
 	@Override
 	public Object invoke(Object proxy, Method m, Object[] args)
 			throws Throwable {
 		try {
-			T wrapped = lazyLoad();
+			T wrapped = getReferredResource();
 			return m.invoke(wrapped, args);
 		} catch (InvocationTargetException e) {
 			throw e.getTargetException();
@@ -74,4 +83,6 @@ public abstract class AbstractLazyLoadable<T> implements InvocationHandler {
 		}
 	}
 
+	public abstract MapToObject<T> getTransformator();
+	
 }

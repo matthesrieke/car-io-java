@@ -25,18 +25,26 @@ package org.n52.car.io.jackson.transform;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.n52.car.io.jackson.lazy.HyperReferableInstantiation;
+import org.n52.car.io.jackson.lazy.LazyUser;
+import org.n52.car.io.jackson.types.UserImpl;
 import org.n52.car.io.types.User;
 
-public class MapToUser extends MapToObject<User> {
+public class MapToUser extends MapToObject<User> implements HyperReferableInstantiation<User> {
 
 	@Override
 	public User createObjectFromMap(Map<?, ?> map) {
-		User result = new User();
+		UserImpl result = new UserImpl();
 		result.setName((String) map.get("name"));
 		result.setCreated(new DateTime(map.get("created")));
 		result.setModified(new DateTime(map.get("modified")));
 		result.setMail((String) map.get("mail"));
 		return result;
+	}
+
+	@Override
+	public User createHyperReferableInstance(String href, String name) {
+		return createHyperReferable(new LazyUser(href, name), User.class);
 	}
 
 }

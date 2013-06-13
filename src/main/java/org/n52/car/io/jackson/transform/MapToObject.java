@@ -22,21 +22,35 @@
  */
 package org.n52.car.io.jackson.transform;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.n52.car.io.jackson.lazy.AbstractLazyLoadable;
+import org.n52.car.io.jackson.lazy.HyperReferableInstantiation;
+
 public abstract class MapToObject<T> {
 	
+	@SuppressWarnings("unchecked")
 	public List<T> fromMap(Map<?, ?> map, String baseName) {
-		@SuppressWarnings("unchecked")
 		List<Object> objects = (List<Object>) map.get(baseName);
 		
 		List<T> result = new ArrayList<T>(objects.size());
 		
+		Map<?, ?> node;
 		for (Object o : objects) {
 			if (o instanceof Map<?, ?>) {
-				result.add(createObjectFromMap((Map<?, ?>) o));
+				node = (Map<?, ?>) o;
+				String href = (String) node.get("href");
+				
+				if (notNullAndNotEmpty(href) && this instanceof HyperReferableInstantiation) {
+					String name = (String) node.get("name");
+					result.add(((HyperReferableInstantiation<T>) this).createHyperReferableInstance(href, name));
+				}
+				else {
+					result.add(createObjectFromMap(node));
+				}
 			}
 		}
 		
@@ -47,5 +61,14 @@ public abstract class MapToObject<T> {
 
 	protected boolean notNullAndNotEmpty(String s) {
 		return s != null && !s.isEmpty();
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected T createHyperReferable(AbstractLazyLoadable<T> loader,
+			Class<? extends T> c) {
+		Object proxy = Proxy.newProxyInstance(getClass().getClassLoader(),
+				new Class[] {c},
+				loader);
+		return (T) proxy;
 	}
 }

@@ -20,18 +20,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.car.io.types;
+package org.n52.car.io.jackson.lazy;
 
-import org.joda.time.DateTime;
+import org.n52.car.io.jackson.transform.MapToObject;
+import org.n52.car.io.jackson.transform.MapToUser;
+import org.n52.car.io.types.User;
 
-public interface Track {
+public class LazyUser extends AbstractLazyLoadable<User> {
 
-	public DateTime getModified();
+	private MapToUser user = new MapToUser(); 
+	
+	public LazyUser(String href, String name) {
+		super(href, name);
+	}
 
-	public String getId();
-
-	public String getName();
-
-	DateTime getCreated();
+	@Override
+	public MapToObject<User> getTransformator() {
+		return this.user;
+	}
 
 }

@@ -30,8 +30,8 @@ public class LazyTrack extends AbstractLazyLoadable<Track> {
 
 	private MapToTrack transformator = new MapToTrack();
 
-	public LazyTrack(String href) {
-		super(href);
+	public LazyTrack(String href, String name) {
+		super(href, name);
 	}
 
 	@Override

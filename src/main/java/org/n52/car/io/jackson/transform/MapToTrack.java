@@ -22,27 +22,18 @@
  */
 package org.n52.car.io.jackson.transform;
 
-import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.joda.time.DateTime;
+import org.n52.car.io.jackson.lazy.HyperReferableInstantiation;
 import org.n52.car.io.jackson.lazy.LazyTrack;
 import org.n52.car.io.jackson.types.TrackImpl;
 import org.n52.car.io.types.Track;
 
-public class MapToTrack extends MapToObject<Track> {
+public class MapToTrack extends MapToObject<Track> implements HyperReferableInstantiation<Track> {
 
 	@Override
 	public Track createObjectFromMap(Map<?, ?> map) {
-		String href = (String) map.get("href");
-		
-		if (notNullAndNotEmpty(href)) {
-			Object proxy = Proxy.newProxyInstance(getClass().getClassLoader(),
-					new Class[] {Track.class},
-					new LazyTrack(href));
-			return (Track) proxy;
-		}
-		
 		TrackImpl result = new TrackImpl();
 		readProperties((Map<?, ?>) map.get("properties"), result);
 		return result;
@@ -53,6 +44,11 @@ public class MapToTrack extends MapToObject<Track> {
 		result.setName((String) map.get("name"));
 		result.setModified(new DateTime(map.get("modified")));
 		result.setCreated(new DateTime(map.get("created")));
+	}
+
+	@Override
+	public Track createHyperReferableInstance(String href, String name) {
+		return (Track) createHyperReferable(new LazyTrack(href, name), Track.class);
 	}
 
 }

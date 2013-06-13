@@ -20,18 +20,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.n52.car.io.types;
+package org.n52.car.io.jackson.lazy;
 
-import org.joda.time.DateTime;
-
-public interface Track {
-
-	public DateTime getModified();
-
-	public String getId();
-
-	public String getName();
-
-	DateTime getCreated();
+public interface HyperReferableInstantiation<T> {
+	
+	public T createHyperReferableInstance(String href, String name);
 
 }
