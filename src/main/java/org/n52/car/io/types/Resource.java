@@ -22,14 +22,8 @@
  */
 package org.n52.car.io.types;
 
-import org.joda.time.DateTime;
+public interface Resource {
 
-public interface Track extends Resource {
-
-	public DateTime getModified();
-
-	public String getName();
-
-	DateTime getCreated();
-
+	public String getId();
+	
 }

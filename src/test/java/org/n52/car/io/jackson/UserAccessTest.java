@@ -38,6 +38,7 @@ import org.n52.car.io.Access;
 import org.n52.car.io.AccessException;
 import org.n52.car.io.Connection;
 import org.n52.car.io.ConnectionException;
+import org.n52.car.io.Preferences;
 import org.n52.car.io.jackson.GenericJacksonAccess;
 import org.n52.car.io.types.User;
 
@@ -52,8 +53,22 @@ public class UserAccessTest {
 	public void init() throws ConnectionException {
 		MockitoAnnotations.initMocks(this);
 		Mockito.when(connection.getUsersAsStream()).thenReturn(readUsers());
+		String href = "http://giv-car.uni-muenster.de:8080/dev/rest/users/testuser1";
+		Mockito.when(connection.getResource(href)).thenReturn(readReferencedUser());
+		
+		Access ac = new GenericJacksonAccess();
+		ac.initialize(connection);
+		
+		Preferences.getInstance().setAccess(ac);
 	}
 	
+	
+	private Reader readReferencedUser() {
+		InputStream is = getClass().getResourceAsStream("user.json");
+		return new BufferedReader(new InputStreamReader(is));
+	}
+
+
 	private Reader readUsers() {
 		InputStream is = getClass().getResourceAsStream("users.json");
 		return new BufferedReader(new InputStreamReader(is));
@@ -61,10 +76,7 @@ public class UserAccessTest {
 
 	@Test
 	public void testAccess() throws AccessException {
-		Access ac = new GenericJacksonAccess();
-		ac.initialize(connection);
-		
-		List<User> users = ac.getUsers();
+		List<User> users = Preferences.getInstance().getAccess().getUsers();
 		
 		Assert.assertThat(users, is(notNullValue()));
 		Assert.assertThat(users.size(), is(1));

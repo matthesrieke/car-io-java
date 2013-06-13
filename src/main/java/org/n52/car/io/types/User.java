@@ -24,7 +24,7 @@ package org.n52.car.io.types;
 
 import org.joda.time.DateTime;
 
-public interface User {
+public interface User extends Resource {
 
 	public String getName();
 	

@@ -22,6 +22,6 @@
  */
 package org.n52.car.io.types;
 
-public interface Group {
+public interface Group extends Resource {
 
 }

@@ -63,6 +63,12 @@ public class UserImpl implements User {
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
+
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	

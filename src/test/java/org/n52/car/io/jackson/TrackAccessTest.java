@@ -55,6 +55,11 @@ public class TrackAccessTest {
 		String href = "http://giv-car.uni-muenster.de:8080/dev/rest/tracks/51af5861e4b014f3e6f06097";
 		Mockito.when(connection.getTracksAsStream()).thenReturn(readTracks());
 		Mockito.when(connection.getResource(href)).thenReturn(readReferencedTrack());
+		
+		Access ac = new GenericJacksonAccess();
+		ac.initialize(connection);
+		
+		Preferences.getInstance().setAccess(ac);
 	}
 	
 	private Reader readReferencedTrack() {
@@ -69,12 +74,7 @@ public class TrackAccessTest {
 
 	@Test
 	public void testAccess() throws AccessException {
-		Access ac = new GenericJacksonAccess();
-		ac.initialize(connection);
-		
-		Preferences.getInstance().setAccess(ac);
-		
-		List<Track> tracks = ac.getTracks();
+		List<Track> tracks = Preferences.getInstance().getAccess().getTracks();
 		
 		Assert.assertThat(tracks, is(notNullValue()));
 		Assert.assertThat(tracks.size(), is(1));

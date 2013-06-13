@@ -28,6 +28,8 @@ public interface HyperReferable<T> {
 	
 	public String getName();
 	
+	public String getResourceId();
+	
 	public T getReferredResource();
 	
 }

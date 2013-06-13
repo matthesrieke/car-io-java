@@ -25,11 +25,13 @@ package org.n52.car.io.jackson.lazy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Map;
 
 import org.n52.car.io.AccessException;
 import org.n52.car.io.Preferences;
 import org.n52.car.io.jackson.transform.MapToObject;
+import org.n52.car.io.types.Resource;
 import org.n52.car.io.types.ref.HyperReferable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +43,12 @@ public abstract class AbstractLazyLoadable<T> implements InvocationHandler, Hype
 	private T loaded;
 	private String href;
 	private String name;
+	private String id;
 
 	public AbstractLazyLoadable(String href, String name) {
 		this.href = href;
 		this.name = name;
+		this.id = href.substring(href.lastIndexOf("/")+1, href.length());
 	}
 	
 	public String getHref() {
@@ -55,10 +59,16 @@ public abstract class AbstractLazyLoadable<T> implements InvocationHandler, Hype
 		return name;
 	}
 	
+	public String getResourceId() {
+		return id;
+	}
+
 	public synchronized T getReferredResource() {
 		if (this.loaded != null)
 			return this.loaded;
 
+		logger.debug("Loading lazy resource '{}' at {}", this.name, this.href);
+		
 		Map<?, ?> map;
 		try {
 			map = Preferences.getInstance().getAccess().getResource(this.href);
@@ -66,13 +76,24 @@ public abstract class AbstractLazyLoadable<T> implements InvocationHandler, Hype
 			logger.warn(e.getMessage(), e);
 			throw new RuntimeException(e);
 		}
-		return getTransformator().createObjectFromMap(map);
+		this.loaded = getTransformator().createObjectFromMap(map);
+		return this.loaded;
 	}
 
 	@Override
 	public Object invoke(Object proxy, Method m, Object[] args)
 			throws Throwable {
 		try {
+			/*
+			 * special case: equals (we do it by id)
+			 */
+			if (m.getName().equals("equals") && args.length == 1
+					&& m.getParameterTypes()[0].equals(Object.class)) {
+				if (args[0] instanceof Resource) {
+					return this.getResourceId().equals(((Resource) args[0]).getId());
+				}
+			}
+			
 			T wrapped = getReferredResource();
 			return m.invoke(wrapped, args);
 		} catch (InvocationTargetException e) {
@@ -84,5 +105,16 @@ public abstract class AbstractLazyLoadable<T> implements InvocationHandler, Hype
 	}
 
 	public abstract MapToObject<T> getTransformator();
+
+	public static boolean compareResourceIds(Object obj, String id2) {
+		if (obj instanceof Proxy) {
+			InvocationHandler h = Proxy.getInvocationHandler(obj);
+			if (h instanceof AbstractLazyLoadable) {
+				return ((AbstractLazyLoadable<?>) h).getResourceId().equals(id2);
+			}
+		}
+		
+		return false;
+	}
 	
 }

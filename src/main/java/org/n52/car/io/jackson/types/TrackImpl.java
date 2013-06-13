@@ -23,6 +23,7 @@
 package org.n52.car.io.jackson.types;
 
 import org.joda.time.DateTime;
+import org.n52.car.io.jackson.lazy.AbstractLazyLoadable;
 import org.n52.car.io.types.Track;
 
 public class TrackImpl implements Track {
@@ -69,7 +70,17 @@ public class TrackImpl implements Track {
 		return created;
 	}
 	
-	
+	@Override
+	public boolean equals(Object obj) {
+		if (AbstractLazyLoadable.compareResourceIds(obj, this.getId())) {
+			return true;
+		}
+		
+		if (obj instanceof Track) {
+			return ((Track) obj).getId().equals(this.getId());
+		}
+		return false;
+	}
 	
 
 }

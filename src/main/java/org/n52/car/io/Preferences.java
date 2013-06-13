@@ -22,6 +22,7 @@
  */
 package org.n52.car.io;
 
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ServiceLoader;
@@ -49,18 +50,32 @@ public class Preferences {
 		VALIDATE_JSON
 	}
 	
+	/**
+	 * returns the instance. if it is not available,
+	 * a new instance is created using the {@link #defaultFile}.
+	 * 
+	 * @return the instance
+	 */
 	public static synchronized Preferences getInstance() {
 		if (instance == null)
-			instance = new Preferences();
+			initialize(Preferences.class.getResourceAsStream(defaultFile));
 		
 		return instance;
 	}
 	
-	private Preferences() {
+	/**
+	 * @param config a serialized instance of {@link XMLConfiguration} represented
+	 * as an {@link InputStream}
+	 */
+	public static synchronized void initialize(InputStream config) {
+		instance = new Preferences(config);
+	}
+	
+	private Preferences(InputStream stream) {
 		XMLConfiguration xml = new XMLConfiguration();
 	
 		try {
-			xml.load(getClass().getResource(defaultFile));
+			xml.load(stream);
 		} catch (ConfigurationException e) {
 			logger.warn(e.getMessage(), e);
 		}

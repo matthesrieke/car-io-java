@@ -22,6 +22,6 @@
  */
 package org.n52.car.io.types;
 
-public interface Statistic {
+public interface Statistic extends Resource {
 
 }
