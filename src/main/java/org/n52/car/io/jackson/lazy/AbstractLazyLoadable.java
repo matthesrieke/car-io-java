@@ -36,7 +36,7 @@ import org.n52.car.io.types.ref.HyperReferable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractLazyLoadable<T> implements InvocationHandler, HyperReferable<T> {
+public abstract class AbstractLazyLoadable<T> implements InvocationHandler, HyperReferable<T>, Resource {
 
 	protected static final Logger logger = LoggerFactory
 			.getLogger(AbstractLazyLoadable.class);
@@ -59,7 +59,7 @@ public abstract class AbstractLazyLoadable<T> implements InvocationHandler, Hype
 		return name;
 	}
 	
-	public String getResourceId() {
+	public String getId() {
 		return id;
 	}
 
@@ -89,8 +89,11 @@ public abstract class AbstractLazyLoadable<T> implements InvocationHandler, Hype
 			 */
 			if (m.getName().equals("equals") && args.length == 1
 					&& m.getParameterTypes()[0].equals(Object.class)) {
+				if (args[0] instanceof Proxy) {
+					return compareResourceIds(args[0], this.getId());
+				}
 				if (args[0] instanceof Resource) {
-					return this.getResourceId().equals(((Resource) args[0]).getId());
+					return this.getId().equals(((Resource) args[0]).getId());
 				}
 			}
 			
@@ -110,7 +113,7 @@ public abstract class AbstractLazyLoadable<T> implements InvocationHandler, Hype
 		if (obj instanceof Proxy) {
 			InvocationHandler h = Proxy.getInvocationHandler(obj);
 			if (h instanceof AbstractLazyLoadable) {
-				return ((AbstractLazyLoadable<?>) h).getResourceId().equals(id2);
+				return ((AbstractLazyLoadable<?>) h).getId().equals(id2);
 			}
 		}
 		
